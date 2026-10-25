@@ -25,6 +25,7 @@ import testmq.demo.entity.User;
 import testmq.demo.repository.RefreshTokenRepository;
 import testmq.demo.repository.UserRepository;
 import testmq.demo.service.AuthService;
+import testmq.demo.service.UserService;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -39,6 +40,7 @@ public class AuthServiceImpl implements AuthService {
     final TokenProvider tokenProvider;
     final UserRepository userRepository;
     final RefreshTokenRepository refreshTokenRepository;
+    final UserService userService;
 
     @Value("${app.jwt.refresh-token-validity-in-seconds:2592000}")
     Long refreshTokenExpiration;
@@ -146,20 +148,14 @@ public class AuthServiceImpl implements AuthService {
         SecurityContextHolder.clearContext();
     }
 
-    private LoginResult buildLoginResult(User user, String at, String rt) {
-        LoginResponseDTO.UserLoginResponseDTO userDto = LoginResponseDTO.UserLoginResponseDTO.builder()
-                .userId(String.valueOf(user.getUserId()))
-                .fullName(user.getFullName())
-                .username(user.getUsername())
-                .roleCode(user.getRole() != null ? user.getRole().getCode() : "ROLE_USER")
-                .avatarImage(user.getAvatarImage())
+    public LoginResponseDTO toResponse(User user, String accessToken) {
+        return LoginResponseDTO.builder()
+                .accessToken(accessToken)
+                .user(this.userService.toResponse(user))
                 .build();
+    }
 
-        LoginResponseDTO responseDTO = LoginResponseDTO.builder()
-                .accessToken(at)
-                .user(userDto)
-                .build();
-
-        return new LoginResult(responseDTO, rt);
+    private LoginResult buildLoginResult(User user, String accessToken, String refreshToken) {
+        return new LoginResult(toResponse(user, accessToken), refreshToken);
     }
 }

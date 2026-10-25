@@ -12,7 +12,8 @@ import testmq.demo.common.enums.StatusEnum;
 import testmq.demo.common.exception.DuplicateResourceException;
 import testmq.demo.common.exception.IdInvalidException;
 import testmq.demo.dto.request.auth.RegisterRequestDTO;
-import testmq.demo.dto.response.auth.LoginResponseDTO;
+import testmq.demo.dto.response.auth.RegisterResponseDTO;
+import testmq.demo.dto.response.auth.UserLoginResponseDTO;
 import testmq.demo.entity.Role;
 import testmq.demo.entity.User;
 import testmq.demo.repository.RoleRepository;
@@ -32,25 +33,33 @@ public class UserServiceImpl implements UserService {
     RoleRepository roleRepository;
     PasswordEncoder passwordEncoder;
 
-    public User getUserByUsernameOrEmail(String identifier) {
-        return this.userRepository.findByUsername(identifier)
+    @Override
+    public UserLoginResponseDTO getUserByUsernameOrEmail(String identifier) {
+        User user = this.userRepository.findByUsername(identifier)
                 .or(() -> this.userRepository.findByEmail(identifier))
                 .orElseThrow(() -> {
                     log.debug("User not found with identifier: {}", identifier);
                     return new IdInvalidException("User not found");
                 });
+        return toResponse(user);
     }
 
-    public User getUserById(UUID id) {
-        return this.userRepository.findByUserId(id)
-                .orElseThrow(() -> {
-                    log.debug("User not found with id: {}", id);
-                    return new IdInvalidException("User not found");
-                });
+    @Override
+    public UserLoginResponseDTO getUserById(UUID id) {
+        return toResponse(findUserEntityById(id));
     }
 
+    @Override
+    public UserLoginResponseDTO getProfile(UUID userId) {
+        if (userId == null) {
+            throw new IdInvalidException("User id is required");
+        }
+        return toResponse(findUserEntityById(userId));
+    }
+
+    @Override
     @Transactional
-    public String register(RegisterRequestDTO registerRequestDTO) {
+    public RegisterResponseDTO register(RegisterRequestDTO registerRequestDTO) {
         if (this.userRepository.existsByUsername(registerRequestDTO.getUsername())) {
             throw new DuplicateResourceException("Username already exists");
         }
@@ -82,19 +91,43 @@ public class UserServiceImpl implements UserService {
                 .createdBy("SYSTEM_REGISTRATION")
                 .build();
 
-        this.userRepository.save(user);
-        log.info("Registered user successfully: {}", user.getUsername());
-        return user.getUsername();
+        User savedUser = this.userRepository.save(user);
+        log.info("Registered user successfully: {}", savedUser.getUsername());
+        return toRegisterResponse(savedUser);
     }
 
-    public LoginResponseDTO.UserLoginResponseDTO getProfile(UUID userId) {
-        User user = getUserById(userId);
-        return LoginResponseDTO.UserLoginResponseDTO.builder()
+    public UserLoginResponseDTO toResponse(User user) {
+        if (user == null) {
+            return null;
+        }
+        return UserLoginResponseDTO.builder()
                 .userId(String.valueOf(user.getUserId()))
                 .fullName(user.getFullName())
                 .username(user.getUsername())
                 .roleCode(user.getRole() != null ? user.getRole().getCode() : "ROLE_USER")
                 .avatarImage(user.getAvatarImage())
                 .build();
+    }
+
+    public RegisterResponseDTO toRegisterResponse(User user) {
+        if (user == null) {
+            return null;
+        }
+        return RegisterResponseDTO.builder()
+                .userId(user.getUserId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .fullName(user.getFullName())
+                .roleCode(user.getRole() != null ? user.getRole().getCode() : "ROLE_USER")
+                .createdAt(user.getCreatedAt())
+                .build();
+    }
+
+    private User findUserEntityById(UUID id) {
+        return this.userRepository.findByUserId(id)
+                .orElseThrow(() -> {
+                    log.debug("User not found with id: {}", id);
+                    return new IdInvalidException("User not found");
+                });
     }
 }

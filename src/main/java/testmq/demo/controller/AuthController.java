@@ -24,10 +24,11 @@ import testmq.demo.dto.LoginResult;
 import testmq.demo.dto.request.auth.LoginRequestDTO;
 import testmq.demo.dto.request.auth.RegisterRequestDTO;
 import testmq.demo.dto.response.auth.LoginResponseDTO;
+import testmq.demo.dto.response.auth.RegisterResponseDTO;
+import testmq.demo.dto.response.auth.UserLoginResponseDTO;
 import testmq.demo.service.AuthService;
 import testmq.demo.service.UserService;
 
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -58,12 +59,8 @@ public class AuthController {
 
     @PostMapping("/register")
     @ApiMessage("Register successful")
-    public ResponseEntity<Map<String, String>> register(@Valid @RequestBody RegisterRequestDTO registerRequestDTO) {
-        String username = this.userService.register(registerRequestDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
-                "message", "Registration successful",
-                "username", username
-        ));
+    public ResponseEntity<RegisterResponseDTO> register(@Valid @RequestBody RegisterRequestDTO registerRequestDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.register(registerRequestDTO));
     }
 
     @PostMapping("/refresh-token")
@@ -97,7 +94,7 @@ public class AuthController {
 
     @GetMapping("/me")
     @ApiMessage("Fetch current user profile")
-    public ResponseEntity<LoginResponseDTO.UserLoginResponseDTO> getCurrentUser() {
+    public ResponseEntity<UserLoginResponseDTO> getCurrentUser() {
         UUID currentUserId = SecurityUtils.getCurrentUserId();
         if (currentUserId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

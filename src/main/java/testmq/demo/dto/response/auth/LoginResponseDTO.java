@@ -20,18 +20,4 @@ public class LoginResponseDTO {
     String accessToken;
     UserLoginResponseDTO user;
 
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    @FieldDefaults(level = AccessLevel.PRIVATE)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class UserLoginResponseDTO {
-        String userId;
-        String fullName;
-        String username;
-        String roleCode;
-        String avatarImage;
-    }
 }
