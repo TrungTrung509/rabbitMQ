@@ -1,4 +1,4 @@
-package testmq.demo.service;
+package testmq.demo.service.service;
 
 import testmq.demo.dto.LoginResult;
 import testmq.demo.dto.request.auth.LoginRequestDTO;

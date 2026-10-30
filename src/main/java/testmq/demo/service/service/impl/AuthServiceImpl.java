@@ -1,4 +1,4 @@
-package testmq.demo.service.impl;
+package testmq.demo.service.service.impl;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +24,8 @@ import testmq.demo.entity.RefreshToken;
 import testmq.demo.entity.User;
 import testmq.demo.repository.RefreshTokenRepository;
 import testmq.demo.repository.UserRepository;
-import testmq.demo.service.AuthService;
-import testmq.demo.service.UserService;
+import testmq.demo.service.service.AuthService;
+import testmq.demo.service.service.UserService;
 
 import java.time.Instant;
 import java.util.UUID;

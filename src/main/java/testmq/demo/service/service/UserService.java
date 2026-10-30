@@ -1,4 +1,4 @@
-package testmq.demo.service;
+package testmq.demo.service.service;
 
 import testmq.demo.dto.request.auth.RegisterRequestDTO;
 import testmq.demo.dto.response.auth.RegisterResponseDTO;

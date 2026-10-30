@@ -13,9 +13,10 @@ spring:
 
   cache:
     type: redis
-  redis:
-    host: localhost
-    port: 6379
+  data:
+    redis:
+      host: ${REDIS_HOST:redis}
+      port: ${REDIS_PORT:6379}
 
   jpa:
     hibernate:

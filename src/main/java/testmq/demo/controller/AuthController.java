@@ -26,8 +26,8 @@ import testmq.demo.dto.request.auth.RegisterRequestDTO;
 import testmq.demo.dto.response.auth.LoginResponseDTO;
 import testmq.demo.dto.response.auth.RegisterResponseDTO;
 import testmq.demo.dto.response.auth.UserLoginResponseDTO;
-import testmq.demo.service.AuthService;
-import testmq.demo.service.UserService;
+import testmq.demo.service.service.AuthService;
+import testmq.demo.service.service.UserService;
 
 import java.util.UUID;
 

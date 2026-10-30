@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import testmq.demo.dto.request.event.EventRequestDTO;
 import testmq.demo.dto.response.event.EventResponseDTO;
-import testmq.demo.service.EventService;
+import testmq.demo.service.service.EventService;
 
 import java.util.List;
 import java.util.UUID;

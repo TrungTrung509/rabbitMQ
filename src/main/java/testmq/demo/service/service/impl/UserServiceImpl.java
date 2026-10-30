@@ -1,4 +1,4 @@
-package testmq.demo.service.impl;
+package testmq.demo.service.service.impl;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import testmq.demo.entity.Role;
 import testmq.demo.entity.User;
 import testmq.demo.repository.RoleRepository;
 import testmq.demo.repository.UserRepository;
-import testmq.demo.service.UserService;
+import testmq.demo.service.service.UserService;
 
 import java.util.UUID;
 
